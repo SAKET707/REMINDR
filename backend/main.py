@@ -10,7 +10,7 @@ from api import telegram
 from api import gmail
 from contextlib import asynccontextmanager
 from services.scheduler_service import start_scheduler, scheduler
-
+from core.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -36,6 +36,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
+        settings.FRONTEND_URL,
     ],
     allow_credentials=True,
     allow_methods=["*"],
