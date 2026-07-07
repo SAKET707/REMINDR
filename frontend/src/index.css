@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:wght@100..900&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  /* ===========================
+      BRAND COLORS
+  =========================== */
+
+  --color-primary-dark: #154230; /* Luxurious Emerald */
+  --color-primary: #5d1e21; /* Deep Burgundy */
+  --color-primary-light: #a6824a; /* Antique Gold */
+  --color-secondary-light: #e6e2da; /* Soft Cream */
+  --color-background-soft: #f7f5f2; /* Warm Background */
+
+  /* ===========================
+      NEUTRALS
+  =========================== */
+
+  --color-white: #ffffff;
+  --color-black: #101111;
+  --color-text-primary: #101111;
+  --color-text-secondary: #5f5f5f;
+
+  --color-border: #d8d3ca;
+  --color-card: #ffffff;
+
+  --color-success: #2e7d32;
+  --color-warning: #d18c12;
+  --color-danger: #c0392b;
+
+  /* ===========================
+      FONTS
+  =========================== */
+
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  /* ===========================
+      RADIUS
+  =========================== */
+
+  --radius-card: 1rem;
+  --radius-button: 0.75rem;
+  --radius-input: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply bg-background-soft
+           text-text-primary
+           font-body;
+
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(40px, -30px) scale(1.05);
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.95);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 12s ease-in-out infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
