@@ -8,10 +8,25 @@ from nltk.stem import WordNetLemmatizer
 
 MODEL_DIR = Path(__file__).parent.parent / "artifacts"
 
-nltk.download("punkt", quiet=True)
-nltk.download("stopwords", quiet=True)
-nltk.download("wordnet", quiet=True)
-nltk.download("punkt_tab", quiet=True)
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt", quiet=True)
+
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except LookupError:
+    nltk.download("punkt_tab", quiet=True)
+
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    nltk.download("stopwords", quiet=True)
+
+try:
+    nltk.data.find("corpora/wordnet")
+except LookupError:
+    nltk.download("wordnet", quiet=True)
 
 _model = joblib.load(
     MODEL_DIR / "spam_model.joblib"
