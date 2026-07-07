@@ -11,6 +11,7 @@ from api import gmail
 from contextlib import asynccontextmanager
 from services.scheduler_service import start_scheduler, scheduler
 from core.config import settings
+from api import telegram_webhook
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -50,6 +51,7 @@ app.include_router(reminder.router)
 app.include_router(user.router)
 app.include_router(telegram.router)
 app.include_router(gmail.router)
+app.include_router(telegram_webhook.router)
 
 @app.get("/")
 def root():
