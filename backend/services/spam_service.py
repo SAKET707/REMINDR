@@ -11,6 +11,7 @@ MODEL_DIR = Path(__file__).parent.parent / "artifacts"
 nltk.download("punkt", quiet=True)
 nltk.download("stopwords", quiet=True)
 nltk.download("wordnet", quiet=True)
+nltk.download("punkt_tab", quiet=True)
 
 _model = joblib.load(
     MODEL_DIR / "spam_model.joblib"
