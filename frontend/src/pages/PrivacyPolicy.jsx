@@ -195,7 +195,7 @@ export default function PrivacyPolicy() {
 
         <div className="mt-4 rounded-xl border border-border bg-secondary-light p-5">
           <p className="font-semibold text-primary">
-            Email : ksaket1409@gmail.com
+            Email : saketacad@gmail.com
           </p>
         </div>
       </Section>
