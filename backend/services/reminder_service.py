@@ -8,7 +8,9 @@ from models.email import Email
 
 class ReminderService:
 
-    REMINDER_ADVANCE = timedelta(days=1)
+    ONE_DAY = timedelta(days=1)
+    FOUR_HOURS = timedelta(hours=4)
+    ONE_HOUR = timedelta(hours=1)
 
     @staticmethod
     def create(
@@ -28,18 +30,21 @@ class ReminderService:
         now = datetime.now(timezone.utc)
 
         # If the email has a deadline,
-        # schedule the reminder 1 day before it.
+        # schedule the reminder according to this logic 
         if email.deadline:
+            time_until_deadline = email.deadline - now
 
-            scheduled_for = (
-                email.deadline
-                - ReminderService.REMINDER_ADVANCE
-            )
+            if time_until_deadline > ReminderService.ONE_DAY:
+                scheduled_for = email.deadline - ReminderService.ONE_DAY
 
-            # If the reminder time has already passed,
-            # notify the user soon instead.
-            if scheduled_for <= now:
-                scheduled_for = now + timedelta(minutes=5) # short buffer avoids immediate notification bursts, gives the scheduler enough time to process the reminder
+            elif time_until_deadline > timedelta(hours=12):
+                scheduled_for = email.deadline - ReminderService.FOUR_HOURS
+
+            elif time_until_deadline > timedelta(hours=4):
+                scheduled_for = email.deadline - ReminderService.ONE_HOUR
+
+            else:
+                scheduled_for = now + timedelta(minutes=5)
 
         # No deadline found.
         else:
