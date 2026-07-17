@@ -1,11 +1,11 @@
 import secrets # used to build passwords, api keys , tokens etc
 from datetime import datetime, timedelta, timezone
-
 from sqlalchemy.orm import Session
-
 from models.telegram_token import TelegramConnectToken
 from models.user import User
 
+import logging
+logger = logging.getLogger(__name__)
 
 def create_connect_token( # input -> current logged in user & outputs a temporary token
     db: Session,
@@ -32,11 +32,12 @@ def create_connect_token( # input -> current logged in user & outputs a temporar
 
     db.add(connect_token)
     db.commit()
+    logger.info(
+        "Created Telegram connect token for user %s",
+        current_user.email,
+    )
 
     return token
-
-
-
 
 
 def verify_telegram_connection(
@@ -52,9 +53,15 @@ def verify_telegram_connection(
     )
 
     if connect_token is None:
+        logger.warning(
+            "Telegram connection failed: invalid token"
+        )
         return False
 
     if connect_token.expires_at < datetime.now(timezone.utc):
+        logger.warning(
+            "Telegram connection failed: expired token"
+        )
         db.delete(connect_token)
         db.commit()
         return False
@@ -66,6 +73,9 @@ def verify_telegram_connection(
     )
 
     if user is None:
+        logger.warning(
+            "Telegram connection failed: user not found for token"
+        )
         return False
 
     user.telegram_chat_id = chat_id # save in db for future use
@@ -73,5 +83,9 @@ def verify_telegram_connection(
     db.delete(connect_token)
 
     db.commit()
+    logger.info(
+        "Telegram connected successfully for user %s",
+        user.email,
+    )
 
     return True

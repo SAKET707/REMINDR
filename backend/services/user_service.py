@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-
 from models.user import User
 
+import logging
+logger = logging.getLogger(__name__)
 
 def create_or_update_google_user(
     db: Session,
@@ -24,6 +25,10 @@ def create_or_update_google_user(
 
         db.commit()
         db.refresh(user)
+        logger.info(
+            "Updated Google user %s",
+            user.email,
+        )
 
         return user
 
@@ -38,6 +43,10 @@ def create_or_update_google_user(
     db.add(user)
     db.commit()
     db.refresh(user)
+    logger.info(
+        "Created Google user %s",
+        user.email,
+    )
 
     return user
 

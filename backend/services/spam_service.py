@@ -8,6 +8,9 @@ from nltk.stem import WordNetLemmatizer
 
 MODEL_DIR = Path(__file__).parent.parent / "artifacts"
 
+import logging
+logger = logging.getLogger(__name__)
+
 try:
     nltk.data.find("tokenizers/punkt")
 except LookupError:
@@ -35,6 +38,8 @@ _model = joblib.load(
 _vectorizer = joblib.load(
     MODEL_DIR / "vectorizer.joblib"
 )
+
+logger.info("Spam classifier model loaded successfully")
 
 _lemmatizer = WordNetLemmatizer()
 

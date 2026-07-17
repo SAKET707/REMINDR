@@ -1,11 +1,11 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-
 from services.notification_service import NotificationService
 from services.gmail_watch_service import GmailWatchService
 from services.cleanup_service import CleanupService
+import logging
 
 scheduler = BackgroundScheduler(timezone="UTC") # it runs in a separate background thread while Fastapi continues serving requests
-
+logger = logging.getLogger(__name__)
 
 def start_scheduler():
 
@@ -39,4 +39,4 @@ def start_scheduler():
 
     scheduler.start() # it starts scheduler , above only registration 
 
-    print("✅ Reminder Scheduler Started")
+    logger.info("Scheduler started successfully")

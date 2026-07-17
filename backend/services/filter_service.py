@@ -5,6 +5,8 @@ import json
 from prompts.filter import FILTER_SYSTEM_PROMPT
 from services.llm_service import LLMService
 
+import logging
+logger = logging.getLogger(__name__)
 
 class FilterService:
 
@@ -34,7 +36,10 @@ class FilterService:
         """
 
         try:
-
+            logger.info(
+                "Filtering email with LLM (subject=%r)",
+                subject,
+            )
             response = LLMService.chat( # we made this so that filterservice dont need to know how to talk to llms & returns str
                 system_prompt=FILTER_SYSTEM_PROMPT,
                 user_prompt=user_prompt,
@@ -44,16 +49,27 @@ class FilterService:
 
             result = json.loads(response) # parse and get dict
 
-            return bool(
+            decision = bool(
                 result.get(
                     "continue_processing",
-                    True,
-                ) # if llm forgot to put this key , then default is True , no crash
+                    True, # if llm forgot to put this key , then default is True , no crash
+                )
             )
 
-        except Exception as e:
+            logger.info(
+                "Filter decision for subject=%r: continue_processing=%s",
+                subject,
+                decision,
+            )
 
-            print(f"FilterService Error: {e}")
+            return decision
+
+        except Exception:
+
+            logger.exception(
+                "FilterService failed for subject=%r. Continuing processing as fail-safe.",
+                subject,
+            )
 
             # Fail safe design.
             # Never ignore an email because the model failed.

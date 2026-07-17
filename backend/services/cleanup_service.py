@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta, timezone
-
 from core.database import SessionLocal
 from models.email import Email
 from models.reminder import Reminder
 # we need to clean reminder and email tables so they dont only fill but clears past mails also
+
+import logging
+logger = logging.getLogger(__name__)
 
 class CleanupService:
 
@@ -11,7 +13,7 @@ class CleanupService:
 
     @staticmethod
     def cleanup():
-        print("🧹 Cleanup job started")
+        logger.info("Cleanup job started")
 
         db = SessionLocal()
 
@@ -33,11 +35,12 @@ class CleanupService:
             )
 
             if not emails:
-                print("No processed emails to clean.")
+                logger.info("No processed emails to clean")
                 return
 
-            print(
-                f"Cleaning {len(emails)} processed email(s)..."
+            logger.info(
+                "Cleaning %d processed email(s)",
+                len(emails),
             )
 
             for email in emails:
@@ -45,11 +48,12 @@ class CleanupService:
 
             db.commit()
 
-            print("Cleanup completed.")
+            logger.info("Cleanup completed")
 
         except Exception:
 
             db.rollback()
+            logger.exception("Cleanup job failed")
             raise
 
         finally:

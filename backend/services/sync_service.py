@@ -7,8 +7,10 @@ from services.email_service import EmailService
 from services.reminder_service import ReminderService
 from core.security import Security
 from services.spam_service import SpamService
-
 # this is the pipeline which connects services
+
+import logging
+logger = logging.getLogger(__name__)
 
 class SyncService:
 
@@ -16,6 +18,10 @@ class SyncService:
     def sync_user(db, user):
 
         try:
+            logger.info(
+                "Starting Gmail sync for user %s",
+                user.email,
+            )
             refresh_token = Security.decrypt( # get the decrypted refresh token
                 user.encrypted_refresh_token
             )
@@ -29,6 +35,12 @@ class SyncService:
 
             emails = result["emails"]
             latest_history_id = result["latest_history_id"]
+
+            logger.info(
+                "Fetched %d email(s) for user %s",
+                len(emails),
+                user.email,
+            )
 
             for raw_email in emails:
 
@@ -49,6 +61,11 @@ class SyncService:
                 )
 
                 if not should_continue:
+                    logger.info(
+                        "Skipped email %r for user %s",
+                        parsed["subject"],
+                        user.email,
+                    )
                     continue
 
                 
@@ -70,14 +87,25 @@ class SyncService:
                     db=db,
                     email=email,
                 )
+                logger.info(
+                    "Processed email %r for user %s",
+                    parsed["subject"],
+                    user.email,
+                )
 
-            # Every Gmail message has now been processed
+            # every Gmail message has now been processed so update latest history id
             user.last_history_id = latest_history_id
-
+            
             db.commit()
+            logger.info(
+                "Completed Gmail sync for user %s",
+                user.email,
+            )
 
         except Exception:
-
             db.rollback()
-
+            logger.exception(
+                "Gmail sync failed for user %s",
+                user.email,
+            )
             raise

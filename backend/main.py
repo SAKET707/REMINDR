@@ -12,14 +12,21 @@ from contextlib import asynccontextmanager
 from services.scheduler_service import start_scheduler, scheduler
 from core.config import settings
 from api import telegram_webhook
+import logging
+from core.logging_config import setup_logging
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
+    logger.info("Starting REMINDR scheduler...")
     start_scheduler()
 
     yield
 
+    logger.info("Stopping REMINDR scheduler...")
     scheduler.shutdown()
 
 

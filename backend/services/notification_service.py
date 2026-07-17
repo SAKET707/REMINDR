@@ -1,10 +1,11 @@
 from collections import defaultdict
 from datetime import datetime, timezone
-
 from core.database import SessionLocal # this creates its own session 
 from services.reminder_service import ReminderService # we use this to get due reminders
 from services.tele_noti_service import TeleNotiService # formats the msg and sends it
 
+import logging
+logger = logging.getLogger(__name__)
 
 class NotificationService:
 
@@ -16,8 +17,11 @@ class NotificationService:
         try:
 
             reminders = ReminderService.get_due_reminders(db) # get due reminders
-            print("Scheduler running...")
-            print(f"Found {len(reminders)} due reminders")
+            logger.info("Notification scheduler started")
+            logger.info(
+                "Found %d due reminder(s)",
+                len(reminders),
+            )
 
             if not reminders:
                 return
@@ -33,9 +37,17 @@ class NotificationService:
             for reminder_list in reminders_by_user.values():
 
                 user = reminder_list[0].email.user
-                print(f"Sending {len(reminder_list)} reminders to {user.email}")
+                logger.info(
+                    "Sending %d reminder(s) to %s",
+                    len(reminder_list),
+                    user.email,
+                )
 
                 if not user.telegram_chat_id: # if telegram not connected then skip no crash
+                    logger.info(
+                        "Skipping reminders for %s because Telegram is not connected",
+                        user.email,
+                    )
                     continue
 
                 message = TeleNotiService.format_reminders(
@@ -54,13 +66,19 @@ class NotificationService:
                         timezone.utc
                     )
 
-                print("Telegram message sent")
+                logger.info(
+                    "Telegram notification sent to %s",
+                    user.email,
+                )
 
             db.commit()
 
         except Exception:
 
             db.rollback()
+            logger.exception(
+                "Notification scheduler failed"
+            )
             raise
 
         finally:

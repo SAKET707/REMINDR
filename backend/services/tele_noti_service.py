@@ -2,6 +2,10 @@ from collections import defaultdict
 import requests # communicate using http req
 from core.config import settings
 # this service knows how to send msg to telegram
+
+import logging
+logger = logging.getLogger(__name__)
+
 class TeleNotiService:
 
     BASE_URL = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}" # initialize once & reuse it 
@@ -22,6 +26,10 @@ class TeleNotiService:
 
         response.raise_for_status()# telegram may return 500 , 404 , w/o this backend thinks everything succeeded. 
                                     #instead raise exception and rollback .
+        logger.info(
+            "Telegram notification sent successfully to chat_id=%s",
+            chat_id,
+        )
 
     @staticmethod
     def format_reminders(reminders):

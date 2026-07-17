@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta, timezone
-
 from core.database import SessionLocal
 from models.user import User
 from services.gmail_service import enable_gmail_watch
 # this file renews the gmail watch subscription before it expires
+
+import logging
+logger = logging.getLogger(__name__)
 
 class GmailWatchService:
 
@@ -30,10 +32,13 @@ class GmailWatchService:
             )
 
             if not users:
-                print("No Gmail watches need renewal.")
+                logger.info("No Gmail watches need renewal")
                 return
 
-            print(f"Renewing Gmail watch for {len(users)} user(s)...")
+            logger.info(
+                "Renewing Gmail watch for %d user(s)",
+                len(users),
+            )
 
             for user in users:
 
@@ -44,14 +49,16 @@ class GmailWatchService:
                         current_user=user,
                     )
 
-                    print(
-                        f"Renewed Gmail watch for {user.email}"
+                    logger.info(
+                        "Renewed Gmail watch for %s",
+                        user.email,
                     )
 
-                except Exception as e:
+                except Exception:
 
-                    print(
-                        f"Failed to renew watch for {user.email}: {e}"
+                    logger.exception(
+                        "Failed to renew Gmail watch for %s",
+                        user.email,
                     )
 
             db.commit() # commit once for many users to avoid db overhead
@@ -59,6 +66,9 @@ class GmailWatchService:
         except Exception:
 
             db.rollback()
+            logger.exception(
+                "Gmail watch renewal job failed"
+            )
             raise
 
         finally:

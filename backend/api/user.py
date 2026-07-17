@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 from schemas.user_schema import UserResponse
 from services.gmail_service import disable_gmail_watch
 
+import logging
+logger = logging.getLogger(__name__)
+
 router = APIRouter(
     prefix="/user",
     tags=["User"],
@@ -36,13 +39,20 @@ def delete_account(
 
             disable_gmail_watch(current_user)
 
-    except Exception as e:
+    except Exception:
 
-        print(f"Failed to stop Gmail watch: {e}")
+        logger.exception(
+            "Failed to stop Gmail watch for user %s",
+            current_user.email,
+        )
 
     db.delete(current_user) # only mark the object for deleteion
 
     db.commit()
+    logger.info(
+        "Deleted account for user %s",
+        current_user.email,
+    )
 
     return {
         "message": "Account deleted successfully"

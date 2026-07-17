@@ -1,9 +1,11 @@
 import requests # google oauth servers exposes an http api
-
 from core.config import settings
 # get a new access token using refresh token instead of asking user to sign in again
+import logging
+logger = logging.getLogger(__name__)
 
 def refresh_google_access_token(refresh_token: str) -> str:
+    logger.info("Refreshing Google access token")
 
     response = requests.post( # token endpoint is defined as POST /token
         "https://oauth2.googleapis.com/token",
@@ -16,5 +18,5 @@ def refresh_google_access_token(refresh_token: str) -> str:
     )
 
     response.raise_for_status()
-
+    logger.info("Successfully refreshed Google access token")
     return response.json()["access_token"]

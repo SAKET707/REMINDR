@@ -1,9 +1,11 @@
 import json
 from datetime import datetime
-
 from prompts.analysis import ANALYSIS_SYSTEM_PROMPT
 from services.llm_service import LLMService
 # this converts raw email to structured data
+
+import logging
+logger = logging.getLogger(__name__)
 
 class AnalysisService:
 
@@ -27,12 +29,30 @@ class AnalysisService:
         Body:
         {body}
         """
-
-        response = LLMService.chat(
-            system_prompt=ANALYSIS_SYSTEM_PROMPT,
-            user_prompt=user_prompt,
-            model=AnalysisService.MODEL,
-            temperature=0,
+        logger.info(
+            "Analyzing email with LLM (subject=%r)",
+            subject,
         )
+        try:
+            response = LLMService.chat(
+                system_prompt=ANALYSIS_SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                model=AnalysisService.MODEL,
+                temperature=0,
+            )
 
-        return json.loads(response)
+            result = json.loads(response)
+
+            logger.info(
+                "Successfully analyzed email (subject=%r)",
+                subject,
+            )
+
+            return result
+
+        except Exception:
+            logger.exception(
+                "Failed to analyze email (subject=%r)",
+                subject,
+            )
+            raise

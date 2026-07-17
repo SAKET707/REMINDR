@@ -2,15 +2,14 @@ from google.oauth2.credentials import Credentials # it manages refresh token, ex
 from googleapiclient.discovery import build # it creates a gmail client object that knows how to communicate with a google api
 from datetime import datetime, UTC
 import requests
-
 from sqlalchemy.orm import Session
-
 from core.security import Security
 from core.config import settings
 from models.user import User
-
 from services.google_service import refresh_google_access_token
 
+import logging
+logger = logging.getLogger(__name__)
 
 class GmailService:
 
@@ -51,7 +50,7 @@ class GmailService:
 
     @staticmethod
     def initial_sync(service, max_results=5): # if user sign in today then last_history_id = null in db so fetch latest 5(here) 
-
+        logger.info("Starting initial Gmail sync")
         response = ( # this only gets id's and not bodies as they are huge
             service.users()
             .messages()
@@ -78,7 +77,10 @@ class GmailService:
             emails.append(email)
 
             latest_history_id = email["historyId"]
-
+        logger.info(
+            "Initial Gmail sync fetched %d email(s)",
+            len(emails),
+        )
         return {
             "emails": emails, # downloaded emails
             "latest_history_id": latest_history_id # latest history id
@@ -86,7 +88,10 @@ class GmailService:
 
     @staticmethod
     def incremental_sync(service, last_history_id): # this gets all changes after historyId = 'x' its fast and precise what we want
-
+        logger.info(
+            "Starting incremental Gmail sync from history_id=%s",
+            last_history_id,
+        )
         response = ( # asks what changed after historyId = 'x'
             service.users()
             .history()
@@ -122,7 +127,10 @@ class GmailService:
                 )
 
                 emails.append(email)
-
+        logger.info(
+            "Incremental Gmail sync fetched %d new email(s)",
+            len(emails),
+        )
         return {
             "emails": emails,
             "latest_history_id": response.get(
@@ -153,6 +161,10 @@ def enable_gmail_watch(
     db: Session,
     current_user: User,
 ):
+    logger.info(
+        "Enabling Gmail watch for user %s",
+        current_user.email,
+    )
 
     refresh_token = Security.decrypt(
         current_user.encrypted_refresh_token
@@ -186,13 +198,19 @@ def enable_gmail_watch(
 
     db.flush() # this doesnt commit becos caller decides whether the whole transaction succeeded or not
     db.refresh(current_user) # load latest ORM state
-
+    logger.info(
+        "Gmail watch enabled for user %s",
+        current_user.email,
+    )
     return data
 
 
 
 def disable_gmail_watch(current_user):
-
+    logger.info(
+        "Disabling Gmail watch for user %s",
+        current_user.email,
+    )
     refresh_token = Security.decrypt(
         current_user.encrypted_refresh_token
     )
@@ -210,6 +228,9 @@ def disable_gmail_watch(current_user):
     )
 
     response.raise_for_status()
-
+    logger.info(
+        "Gmail watch disabled for user %s",
+        current_user.email,
+    )
     return response.json() if response.content else {}
 

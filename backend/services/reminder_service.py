@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta, timezone
-
 from models.reminder import Reminder
 from sqlalchemy.orm import joinedload
 # this decides when should the user be reminded
 from models.email import Email
 
+import logging
+logger = logging.getLogger(__name__)
 
 class ReminderService:
 
@@ -25,6 +26,10 @@ class ReminderService:
         )
 
         if existing: # again duplicate check no need to create 2 identical reminders for 1 mail
+            logger.debug(
+                "Reminder already exists for email_id=%d",
+                email.id,
+            )
             return existing
 
         now = datetime.now(timezone.utc)
@@ -60,6 +65,13 @@ class ReminderService:
         db.flush()
         db.refresh(reminder)
 
+        logger.info(
+            "Created reminder id=%d for email_id=%d scheduled_for=%s",
+            reminder.id,
+            email.id,
+            scheduled_for.isoformat(),
+        )
+        
         return reminder
     
 

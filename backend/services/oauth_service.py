@@ -8,6 +8,9 @@ from core.security import Security
 from services.gmail_service import enable_gmail_watch
 from datetime import datetime,timezone
 
+import logging
+logger = logging.getLogger(__name__)
+
 async def google_login(request: Request): # simply redirect the user to google login page
     redirect_uri = request.url_for("google_callback")
 
@@ -27,7 +30,10 @@ async def google_callback(
     token = await oauth.google.authorize_access_token(request)
 
     userinfo = token["userinfo"]
-
+    logger.info(
+        "Google OAuth successful for %s",
+        userinfo["email"],
+    )
     user = create_or_update_google_user(
         db=db,
         google_id=userinfo["sub"], # sub never changes.it is permanant unique identifier, emails can change
@@ -58,18 +64,24 @@ async def google_callback(
 
             db.commit()
 
-        except Exception as e:
+        except Exception:
 
             db.rollback()
 
-            print(
-                f"Failed to enable Gmail Watch: {e}"
+            logger.exception(
+                "Failed to enable Gmail watch for %s",
+                user.email,
             )
 
     access_token = Security.create_access_token(user.id) # Google OAuth is only used for login and identity verification.
                                                         # After that, our backend issues its own JWT, which is used for stateless authentication between the frontend and backend
     frontend_url = settings.FRONTEND_URL
 
+    logger.info(
+        "User %s logged in successfully",
+        user.email,
+    )
+    
     return RedirectResponse(
         url=f"{frontend_url}/oauth/callback?token={access_token}"
     )
