@@ -43,6 +43,29 @@ export default function Login() {
 
         <hr className="mt-12 border-gray-300" />
 
+        {/* About REMINDR */}
+
+        <section className="mt-10 rounded-xl bg-white/50 p-6">
+          <h2 className="text-xl font-semibold text-primary-dark">
+            About REMINDR
+          </h2>
+
+          <p className="mt-4 text-base leading-8 text-text-secondary">
+            REMINDR is an AI-powered Gmail productivity assistant that helps you
+            stay on top of important emails. After you sign in with Google,
+            REMINDR securely accesses your Gmail using{" "}
+            <strong>read-only</strong> permission to identify important emails,
+            generate AI summaries, extract deadlines, and send timely reminders
+            before deadlines arrive.
+          </p>
+
+          <p className="mt-4 text-base leading-8 text-text-secondary">
+            REMINDR <strong>never sends, modifies, or deletes</strong> your
+            Gmail messages. Your Google account remains under your control at
+            all times.
+          </p>
+        </section>
+
         {/* Google Button */}
 
         <button
