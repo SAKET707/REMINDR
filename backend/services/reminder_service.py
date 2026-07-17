@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 from models.reminder import Reminder
 from sqlalchemy.orm import joinedload
-
+# this decides when should the user be reminded
 from models.email import Email
 
 
@@ -13,7 +13,7 @@ class ReminderService:
     @staticmethod
     def create(
         db,
-        email,
+        email, # this email ORM object contains already all reqd info
     ) -> Reminder:
 
         existing = (
@@ -22,7 +22,7 @@ class ReminderService:
             .first()
         )
 
-        if existing:
+        if existing: # again duplicate check no need to create 2 identical reminders for 1 mail
             return existing
 
         now = datetime.now(timezone.utc)
@@ -39,7 +39,7 @@ class ReminderService:
             # If the reminder time has already passed,
             # notify the user soon instead.
             if scheduled_for <= now:
-                scheduled_for = now + timedelta(minutes=5)
+                scheduled_for = now + timedelta(minutes=5) # short buffer avoids immediate notification bursts, gives the scheduler enough time to process the reminder
 
         # No deadline found.
         else:
@@ -59,11 +59,11 @@ class ReminderService:
     
 
     @staticmethod
-    def get_due_reminders(db):
+    def get_due_reminders(db): # this is used by scheduler 
 
         now = datetime.now(timezone.utc)
-
-        return (
+ 
+        return ( # here n+1 query problem . will learn
             db.query(Reminder)
             .options(
                 joinedload(Reminder.email)

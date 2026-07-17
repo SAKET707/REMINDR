@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# configuration is centralised at one place no need to read env again n agian give type conversions
+# validate reqd variable and fails fast if config is missing
+# basesetting helps pydantic read from render secrets, env file , defaults 
 
 class Settings(BaseSettings):
     DATABASE_URL: str
@@ -18,7 +21,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=".env",
-        extra="ignore",
+        extra="ignore", #ignore extra things in .env if any 
     )
 
 

@@ -13,3 +13,7 @@ class ReminderResponse(BaseModel):
     sent_at: datetime | None
 
     email: EmailSummaryResponse
+         # Nested schema.
+        # Instead of returning only email_id, the API returns
+        # selected email details in the same response.
+            #  no extra api request needed

@@ -49,6 +49,10 @@ Use it to resolve relative dates such as:
 
 Convert every detected deadline into UTC ISO-8601 format.
 
+8. If only a date is mentioned and no time is specified,
+assume the deadline is 23:59:00 UTC on that date.
+Do not infer or invent any other time.
+
 Example:
 
 {

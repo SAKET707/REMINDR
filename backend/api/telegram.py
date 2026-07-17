@@ -10,8 +10,8 @@ from schemas.telegram_schema import (
 )
 
 from services.telegram_service import (
-    create_connect_token,
-    verify_telegram_connection,
+    create_connect_token, # defines the response for /connect
+    verify_telegram_connection, # validates the incoming json for /verify
 )
 
 router = APIRouter(
@@ -24,7 +24,7 @@ router = APIRouter(
     "/connect",
     response_model=TelegramConnectResponse,
 )
-def connect_telegram(
+def connect_telegram( # Generate a temporary secure token that links the current user to a Telegram chat as Exposing user IDs would be less secure and easier to misuse
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -39,7 +39,7 @@ def connect_telegram(
 
 
 @router.post("/verify")
-def verify_telegram(
+def verify_telegram( # This verifies that the token received from Telegram
     request: TelegramVerifyRequest,
     db: Session = Depends(get_db),
 ):

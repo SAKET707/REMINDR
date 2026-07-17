@@ -5,7 +5,7 @@ from models.user import User
 
 def create_or_update_google_user(
     db: Session,
-    google_id: str,
+    google_id: str, # this is sub id this cant change
     email: str,
     name: str,
     profile_picture: str | None,

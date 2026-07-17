@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Depends
 from sqlalchemy.orm import Session
-
+# this is used by telegram server not by frontend
 from core.dependencies import get_db
 from services.telegram_service import verify_telegram_connection
 from services.tele_noti_service import TeleNotiService
@@ -11,8 +11,8 @@ router = APIRouter(
 )
 
 
-@router.post("/webhook")
-async def telegram_webhook(
+@router.post("/webhook") # Telegram calls this URL whenever a user sends a message to your bot
+async def telegram_webhook( 
     request: Request,
     db: Session = Depends(get_db),
 ):

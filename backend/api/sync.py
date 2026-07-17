@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post("/")
+@router.post("/") # post becos it changes server state, it fetches mails, change db , so not readonly operations
 def sync(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

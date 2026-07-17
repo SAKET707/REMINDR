@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.post("/watch")
+@router.post("/watch") # Enable Gmail Push Notifications for the authenticated user.
 def gmail_watch(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -35,7 +35,7 @@ def gmail_watch(
 
 
 
-@router.post("/webhook")
+@router.post("/webhook") # Google Pub/Sub calls it automatically.
 async def gmail_webhook(
     request: Request,
     db: Session = Depends(get_db),

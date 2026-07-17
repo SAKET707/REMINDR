@@ -8,17 +8,19 @@ from services.reminder_service import ReminderService
 from core.security import Security
 from services.spam_service import SpamService
 
+# this is the pipeline which connects services
+
 class SyncService:
 
     @staticmethod
     def sync_user(db, user):
 
         try:
-            refresh_token = Security.decrypt(
+            refresh_token = Security.decrypt( # get the decrypted refresh token
                 user.encrypted_refresh_token
             )
 
-            result = GmailService.sync(
+            result = GmailService.sync( # it will make mails in sync by decideing either initial or incremental sync
                 refresh_token=refresh_token,
                 last_history_id=user.last_history_id,
             )
@@ -30,29 +32,31 @@ class SyncService:
 
             for raw_email in emails:
 
-                parsed = ParserService.parse(raw_email)
+                parsed = ParserService.parse(raw_email) # raw gmail json to python dict
 
-                parsed["body"] = PreprocessorService.clean(
+                parsed["body"] = PreprocessorService.clean( # cleaner text for llm
                     parsed["body"]
                 )
-
-                should_continue = FilterService.should_continue(
-                    parsed["subject"],
-                    parsed["body"],
-                )
-
-                if not should_continue:
-                    continue
 
                 likely_spam = SpamService.predict(
                     parsed["body"]
                 )
 
+                should_continue = FilterService.should_continue( # llm decision
+                    parsed["subject"],
+                    parsed["body"],
+                    likely_spam=likely_spam
+                )
+
+                if not should_continue:
+                    continue
+
+                
+
                 analysis = AnalysisService.analyze(
                     subject=parsed["subject"],
                     body=parsed["body"],
-                    received_at=parsed["received_at"],
-                    likely_spam=likely_spam
+                    received_at=parsed["received_at"]
                 )
 
                 email = EmailService.create(

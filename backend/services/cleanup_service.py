@@ -3,11 +3,11 @@ from datetime import datetime, timedelta, timezone
 from core.database import SessionLocal
 from models.email import Email
 from models.reminder import Reminder
-
+# we need to clean reminder and email tables so they dont only fill but clears past mails also
 
 class CleanupService:
 
-    GRACE_PERIOD = timedelta(minutes=10)
+    GRACE_PERIOD = timedelta(minutes=10) # safety buffer for failures or delayed processing.
 
     @staticmethod
     def cleanup():
@@ -41,7 +41,7 @@ class CleanupService:
             )
 
             for email in emails:
-                db.delete(email)
+                db.delete(email) # cascade delete orphans is there
 
             db.commit()
 

@@ -6,6 +6,7 @@ from models.reminder import Reminder
 from models.email import Email
 from models.user import User
 from schemas.reminder_schema import ReminderResponse
+from services.reminder_service import ReminderService
 
 router = APIRouter(
     prefix="/reminders",
@@ -17,7 +18,7 @@ router = APIRouter(
     "/",
     response_model=list[ReminderResponse],
 )
-def get_reminders(
+def get_reminders( # returns a list of reminders for the authenticated user
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -31,8 +32,7 @@ def get_reminders(
 
     return reminders
 
-from services.reminder_service import ReminderService
-@router.get("/test-reminders")
+@router.get("/test-reminders") # this is for testing
 def test_reminders(
     db: Session = Depends(get_db),
 ):

@@ -94,7 +94,8 @@ Important rules:
 1. Read the ENTIRE email before deciding.
 2. Do NOT rely on individual keywords.
 3. If an important email contains words like "verification code" inside its content, do NOT reject it.
-4. If there is any reasonable doubt, return:
+4. You are given a weak signal from a traditional ML spam classifier. Use it only as supporting evidence and make your own semantic decision. Don't rely on it exclusively.
+5. If there is any reasonable doubt, return:
 
 {
     "continue_processing": true

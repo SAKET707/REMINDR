@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/") # returns all emails belonging to the loggedin user
 def get_emails(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

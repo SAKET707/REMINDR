@@ -1,5 +1,5 @@
 import re
-
+# remove noise & cleans
 
 class PreprocessorService:
 
@@ -8,7 +8,7 @@ class PreprocessorService:
         if not text:
             return ""
 
-        # Remove image placeholders
+        # Remove image placeholders as we are interested in text 
         text = re.sub(
             r"\[image:.*?\]",
             "",
@@ -16,7 +16,7 @@ class PreprocessorService:
             flags=re.IGNORECASE,
         )
 
-        # Remove URLs
+        # Remove URLs as they add little semantic meaning
         text = re.sub(
             r"https?://\S+",
             "",
@@ -38,7 +38,7 @@ class PreprocessorService:
             flags=re.MULTILINE,
         )
 
-        # Remove invisible Unicode formatting characters
+        # Remove invisible Unicode characters like zero width space
         text = re.sub(
             r"[\u00AD\u2007\u200B-\u200F\u2060\uFEFF]",
             "",
@@ -58,7 +58,7 @@ class PreprocessorService:
             "View in browser",
         ]
 
-        lower_text = text.lower()
+        lower_text = text.lower() 
 
         for marker in footer_markers:
             idx = lower_text.find(marker.lower())
