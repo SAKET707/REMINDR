@@ -22,7 +22,7 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-xl rounded-2xl border border-primary-dark bg-background-soft p-24 transition-shadow duration-300 hover:shadow-2xl lg:max-w-2xl xl:max-w-3xl">
         {/* Brand */}
 
-        <p className="text-sm font-semibold uppercase tracking-[0.4em] text-primary-dark md:text-base">
+        <p className="text-3xl font-semibold uppercase tracking-[0.4em] text-primary-dark md:text-base">
           REMINDR
         </p>
 
