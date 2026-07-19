@@ -20,63 +20,69 @@ export default function Sidebar({ collapsed, setCollapsed }) {
 
   return (
     <aside
-      className={`min-h-screen bg-primary-dark text-white transition-all duration-300 ${
-        collapsed ? "w-20" : "w-72 lg:w-100"
+      className={`relative flex min-h-screen flex-col bg-primary-dark text-white transition-all duration-300 ${
+        collapsed ? "w-16 sm:w-20" : "w-64 sm:w-72 lg:w-80"
       }`}
     >
-      <div className="flex items-center justify-between border-b border-white/10 p-6">
+      {/* Header */}
+
+      <div className="flex items-center justify-between border-b border-white/10 p-4 sm:p-6">
         {!collapsed && (
-          <h1 className="font-heading text-4xl font-bold tracking-wide">
+          <h1 className="font-heading text-2xl font-bold tracking-wide sm:text-3xl lg:text-4xl">
             REMINDR
           </h1>
         )}
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="rounded-lg p-2 hover:bg-white/10"
+          className="rounded-lg p-2 transition hover:bg-white/10"
         >
-          <FiMenu size={26} />
+          <FiMenu size={22} />
         </button>
       </div>
 
-      <nav className="mt-8 flex flex-col gap-2 px-3">
+      {/* Navigation */}
+
+      <nav className="mt-6 flex flex-1 flex-col gap-2 px-2 sm:px-3">
         <button
           onClick={() => navigate("/dashboard")}
-          className={`flex items-center rounded-2xl px-4 py-4 text-lg font-medium transition ${
-            collapsed ? "justify-center" : "gap-5"
+          className={`flex items-center rounded-2xl px-3 py-3 text-base font-medium transition sm:px-4 sm:py-4 sm:text-lg ${
+            collapsed ? "justify-center" : "gap-4"
           } ${
             location.pathname === "/dashboard"
               ? "bg-primary-light text-white"
               : "hover:bg-white/10"
           }`}
         >
-          <FiHome size={26} />
+          <FiHome size={22} />
           {!collapsed && <span>Dashboard</span>}
         </button>
 
         <button
           onClick={() => navigate("/profile")}
-          className={`mt-2 flex items-center rounded-2xl px-4 py-4 text-lg font-medium transition ${
-            collapsed ? "justify-center" : "gap-5"
+          className={`flex items-center rounded-2xl px-3 py-3 text-base font-medium transition sm:mt-2 sm:px-4 sm:py-4 sm:text-lg ${
+            collapsed ? "justify-center" : "gap-4"
           } ${
             location.pathname === "/profile"
               ? "bg-primary-light text-white"
               : "hover:bg-white/10"
           }`}
         >
-          <FiUser size={26} />
+          <FiUser size={22} />
           {!collapsed && <span>Profile</span>}
         </button>
       </nav>
 
-      <div className="absolute bottom-6 left-0 right-0 px-4">
+      {/* Logout */}
+
+      <div className="mt-auto p-3 sm:p-4">
         <button
           onClick={handleLogout}
-          className={`flex items-center rounded-2xl bg-primary px-4 py-4 text-lg font-medium transition ${
-            collapsed ? "justify-center" : "gap-5"
-          } hover:bg-red-600`}
+          className={`flex w-full items-center rounded-2xl bg-primary px-3 py-3 text-base font-medium transition hover:bg-red-600 sm:px-4 sm:py-4 sm:text-lg ${
+            collapsed ? "justify-center" : "gap-4"
+          }`}
         >
-          <FiLogOut size={26} />
+          <FiLogOut size={22} />
           {!collapsed && <span>Logout</span>}
         </button>
       </div>
