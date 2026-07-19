@@ -53,7 +53,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background-soft">
-        <h1 className="font-heading text-4xl font-bold text-primary-dark">
+        <h1 className="font-heading text-3xl font-bold text-primary-dark sm:text-4xl">
           Loading...
         </h1>
       </div>
@@ -62,96 +62,104 @@ export default function Profile() {
 
   return (
     <AppLayout>
-      <h1 className="font-heading text-8xl font-bold text-primary-dark">
-        Profile
-      </h1>
+      {/* Header */}
 
-      <p className="mt-3 text-3xl text-text-secondary">
-        Manage your connected accounts.
-      </p>
+      <section>
+        <h1 className="font-heading text-4xl font-bold text-primary-dark sm:text-5xl lg:text-6xl xl:text-7xl">
+          Profile
+        </h1>
 
-      <div className="mt-12 max-w-5xl rounded-3xl bg-white p-10 shadow-md">
+        <p className="mt-3 text-base text-text-secondary sm:text-lg lg:text-xl">
+          Manage your connected accounts.
+        </p>
+      </section>
+
+      {/* Card */}
+
+      <div className="mt-10 max-w-5xl rounded-3xl bg-white p-5 shadow-md sm:p-8 lg:p-10">
         {/* User */}
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center text-center">
           {user?.profile_picture ? (
             <img
               src={user.profile_picture}
               alt={user.name}
-              className="h-36 w-36 rounded-full object-cover"
+              className="h-24 w-24 rounded-full object-cover sm:h-32 sm:w-32 lg:h-36 lg:w-36"
             />
           ) : (
-            <div className="flex h-36 w-36 items-center justify-center rounded-full bg-primary-dark text-5xl font-bold text-white">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary-dark text-3xl font-bold text-white sm:h-32 sm:w-32 sm:text-4xl lg:h-36 lg:w-36 lg:text-5xl">
               {user?.name?.charAt(0)}
             </div>
           )}
 
-          <h2 className="mt-6 font-heading text-4xl font-bold text-primary-dark">
+          <h2 className="mt-6 font-heading text-2xl font-bold text-primary-dark sm:text-3xl lg:text-4xl">
             {user?.name}
           </h2>
 
-          <p className="mt-3 text-2xl text-text-secondary">{user?.email}</p>
+          <p className="mt-2 break-all text-sm text-text-secondary sm:text-base lg:text-xl">
+            {user?.email}
+          </p>
         </div>
 
-        <hr className="my-10 border-border" />
+        <hr className="my-8 border-border lg:my-10" />
 
         {/* Google */}
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-5">
-            <FcGoogle className="text-5xl" />
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <FcGoogle className="text-4xl sm:text-5xl" />
 
             <div>
-              <h3 className="font-heading text-3xl font-semibold text-primary-dark">
+              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl lg:text-3xl">
                 Google Account
               </h3>
 
-              <p className="mt-1 text-xl text-text-secondary">Connected</p>
+              <p className="mt-1 text-sm text-text-secondary sm:text-base lg:text-lg">
+                Connected
+              </p>
             </div>
           </div>
 
-          <span className="rounded-full bg-green-100 px-6 py-3 text-lg font-semibold text-green-700">
+          <span className="self-start rounded-full bg-green-100 px-5 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-6 sm:py-3 sm:text-base">
             Connected
           </span>
         </div>
 
-        <hr className="my-10 border-border" />
+        <hr className="my-8 border-border lg:my-10" />
 
         {/* Telegram */}
 
-        {/* Telegram */}
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-5">
-            <FiSend className="text-4xl text-primary-dark" />
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-4">
+            <FiSend className="text-3xl text-primary-dark sm:text-4xl" />
 
             <div>
-              <h3 className="font-heading text-3xl font-semibold text-primary-dark">
+              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl lg:text-3xl">
                 Telegram
               </h3>
 
-              <p className="mt-1 text-xl text-text-secondary">
+              <p className="mt-1 text-sm text-text-secondary sm:text-base lg:text-lg">
                 {user?.telegram_chat_id ? "Connected" : "Not Connected"}
               </p>
             </div>
           </div>
 
           {user?.telegram_chat_id ? (
-            <span className="rounded-full bg-green-100 px-6 py-3 text-lg font-semibold text-green-700">
+            <span className="self-start rounded-full bg-green-100 px-5 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-6 sm:py-3 sm:text-base">
               Connected
             </span>
           ) : (
-            <div className="flex flex-col items-end gap-4">
+            <div className="flex w-full flex-col gap-3 lg:w-auto lg:items-end">
               <button
                 onClick={handleTelegramConnect}
-                className="rounded-xl bg-primary-dark px-8 py-4 text-lg font-semibold text-white transition hover:opacity-90"
+                className="w-full rounded-xl bg-primary-dark px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 lg:w-auto lg:px-8 lg:py-4 lg:text-lg"
               >
                 Connect Telegram
               </button>
 
               <button
                 onClick={handleRefreshTelegram}
-                className="text-base font-medium text-primary-dark underline underline-offset-4 transition hover:opacity-70"
+                className="text-sm font-medium text-primary-dark underline underline-offset-4 transition hover:opacity-70 sm:text-base"
               >
                 I've Connected
               </button>
@@ -159,13 +167,16 @@ export default function Profile() {
           )}
         </div>
 
-        <hr className="my-10 border-border" />
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-8">
-          <h3 className="font-heading text-3xl font-bold text-red-700">
+        <hr className="my-8 border-border lg:my-10" />
+
+        {/* Danger Zone */}
+
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 sm:p-6 lg:p-8">
+          <h3 className="font-heading text-2xl font-bold text-red-700 sm:text-3xl">
             Danger Zone
           </h3>
 
-          <p className="mt-3 text-xl text-red-600">
+          <p className="mt-3 text-sm leading-7 text-red-600 sm:text-base lg:text-lg">
             Permanently delete your REMINDR account. This removes your
             reminders, processed emails, disconnects Gmail notifications and
             cannot be undone.
@@ -173,7 +184,7 @@ export default function Profile() {
 
           <button
             onClick={handleDeleteAccount}
-            className="mt-8 rounded-xl bg-red-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-red-700"
+            className="mt-6 w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white transition hover:bg-red-700 sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
           >
             Delete Account
           </button>
