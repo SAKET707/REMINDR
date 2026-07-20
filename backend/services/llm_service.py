@@ -51,3 +51,23 @@ class LLMService:
             content = content[:-3].strip()
 
         return content
+    
+
+    @staticmethod
+    def complete(
+        messages: list,
+        model: str,
+        temperature: float = 0,
+        tools: list | None = None,
+    ):
+        """
+        Returns the full Groq completion response.
+        Used by AI agents that require tool calling.
+        """
+
+        return LLMService._client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+            tools=tools,
+        )

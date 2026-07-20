@@ -1,22 +1,20 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
+
+from agents.scheduling_agent import SchedulingAgent
+from models.email import Email
 from models.reminder import Reminder
 from sqlalchemy.orm import joinedload
-# this decides when should the user be reminded
-from models.email import Email
 
 import logging
 logger = logging.getLogger(__name__)
 
-class ReminderService:
 
-    ONE_DAY = timedelta(days=1)
-    FOUR_HOURS = timedelta(hours=4)
-    ONE_HOUR = timedelta(hours=1)
+class ReminderService:
 
     @staticmethod
     def create(
         db,
-        email, # this email ORM object contains already all reqd info
+        email,
     ) -> Reminder:
 
         existing = (
@@ -25,35 +23,32 @@ class ReminderService:
             .first()
         )
 
-        if existing: # again duplicate check no need to create 2 identical reminders for 1 mail
+        if existing:
             logger.debug(
                 "Reminder already exists for email_id=%d",
                 email.id,
             )
             return existing
 
+        scheduled_for = SchedulingAgent.run(
+            db=db,
+            email=email,
+        )
+
         now = datetime.now(timezone.utc)
 
-        # If the email has a deadline,
-        # schedule the reminder according to this logic 
-        if email.deadline:
-            time_until_deadline = email.deadline - now
+        if scheduled_for <= now:
+            raise ValueError(
+                "Scheduling agent returned a reminder in the past."
+            )
 
-            if time_until_deadline > ReminderService.ONE_DAY:
-                scheduled_for = email.deadline - ReminderService.ONE_DAY
-
-            elif time_until_deadline > timedelta(hours=12):
-                scheduled_for = email.deadline - ReminderService.FOUR_HOURS
-
-            elif time_until_deadline > timedelta(hours=4):
-                scheduled_for = email.deadline - ReminderService.ONE_HOUR
-
-            else:
-                scheduled_for = now + timedelta(minutes=5)
-
-        # No deadline found.
-        else:
-            scheduled_for = now + timedelta(minutes=5)
+        if (
+            email.deadline is not None
+            and scheduled_for >= email.deadline
+        ):
+            raise ValueError(
+                "Scheduling agent returned a reminder after the deadline."
+            )
 
         reminder = Reminder(
             email_id=email.id,
@@ -71,16 +66,15 @@ class ReminderService:
             email.id,
             scheduled_for.isoformat(),
         )
-        
+
         return reminder
-    
 
     @staticmethod
-    def get_due_reminders(db): # this is used by scheduler 
+    def get_due_reminders(db):
 
         now = datetime.now(timezone.utc)
- 
-        return ( # here n+1 query problem . will learn
+
+        return (
             db.query(Reminder)
             .options(
                 joinedload(Reminder.email)
