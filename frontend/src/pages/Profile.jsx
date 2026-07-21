@@ -65,7 +65,7 @@ export default function Profile() {
       {/* Header */}
 
       <section>
-        <h1 className="font-heading text-4xl font-bold text-primary-dark sm:text-5xl lg:text-6xl xl:text-7xl">
+        <h1 className="font-heading text-4xl font-bold text-primary-dark sm:text-5xl lg:text-6xl">
           Profile
         </h1>
 
@@ -76,7 +76,7 @@ export default function Profile() {
 
       {/* Card */}
 
-      <div className="mt-10 max-w-5xl rounded-3xl bg-white p-5 shadow-md sm:p-8 lg:p-10">
+      <div className="mt-10 max-w-5xl rounded-3xl bg-white p-5 shadow-sm sm:p-6 lg:p-8">
         {/* User */}
 
         <div className="flex flex-col items-center text-center">
@@ -84,24 +84,24 @@ export default function Profile() {
             <img
               src={user.profile_picture}
               alt={user.name}
-              className="h-24 w-24 rounded-full object-cover sm:h-32 sm:w-32 lg:h-36 lg:w-36"
+              className="h-24 w-24 rounded-full object-cover sm:h-28 sm:w-28 lg:h-32 lg:w-32"
             />
           ) : (
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary-dark text-3xl font-bold text-white sm:h-32 sm:w-32 sm:text-4xl lg:h-36 lg:w-36 lg:text-5xl">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary-dark text-3xl font-bold text-white sm:h-28 sm:w-28 sm:text-4xl lg:h-32 lg:w-32 lg:text-5xl">
               {user?.name?.charAt(0)}
             </div>
           )}
 
-          <h2 className="mt-6 font-heading text-2xl font-bold text-primary-dark sm:text-3xl lg:text-4xl">
+          <h2 className="mt-5 font-heading text-2xl font-bold text-primary-dark sm:text-3xl">
             {user?.name}
           </h2>
 
-          <p className="mt-2 break-all text-sm text-text-secondary sm:text-base lg:text-xl">
+          <p className="mt-2 break-all text-sm text-text-secondary sm:text-base">
             {user?.email}
           </p>
         </div>
 
-        <hr className="my-8 border-border lg:my-10" />
+        <hr className="my-7 border-border" />
 
         {/* Google */}
 
@@ -110,22 +110,22 @@ export default function Profile() {
             <FcGoogle className="text-4xl sm:text-5xl" />
 
             <div>
-              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl lg:text-3xl">
+              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl">
                 Google Account
               </h3>
 
-              <p className="mt-1 text-sm text-text-secondary sm:text-base lg:text-lg">
+              <p className="mt-1 text-sm text-text-secondary sm:text-base">
                 Connected
               </p>
             </div>
           </div>
 
-          <span className="self-start rounded-full bg-green-100 px-5 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-6 sm:py-3 sm:text-base">
+          <span className="self-start rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-5 sm:py-2.5">
             Connected
           </span>
         </div>
 
-        <hr className="my-8 border-border lg:my-10" />
+        <hr className="my-7 border-border" />
 
         {/* Telegram */}
 
@@ -134,25 +134,25 @@ export default function Profile() {
             <FiSend className="text-3xl text-primary-dark sm:text-4xl" />
 
             <div>
-              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl lg:text-3xl">
+              <h3 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl">
                 Telegram
               </h3>
 
-              <p className="mt-1 text-sm text-text-secondary sm:text-base lg:text-lg">
+              <p className="mt-1 text-sm text-text-secondary sm:text-base">
                 {user?.telegram_chat_id ? "Connected" : "Not Connected"}
               </p>
             </div>
           </div>
 
           {user?.telegram_chat_id ? (
-            <span className="self-start rounded-full bg-green-100 px-5 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-6 sm:py-3 sm:text-base">
+            <span className="self-start rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 sm:self-auto sm:px-5 sm:py-2.5">
               Connected
             </span>
           ) : (
             <div className="flex w-full flex-col gap-3 lg:w-auto lg:items-end">
               <button
                 onClick={handleTelegramConnect}
-                className="w-full rounded-xl bg-primary-dark px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 lg:w-auto lg:px-8 lg:py-4 lg:text-lg"
+                className="w-full rounded-xl bg-primary-dark px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 lg:w-auto lg:px-7 lg:py-3"
               >
                 Connect Telegram
               </button>
@@ -167,16 +167,16 @@ export default function Profile() {
           )}
         </div>
 
-        <hr className="my-8 border-border lg:my-10" />
+        <hr className="my-7 border-border" />
 
         {/* Danger Zone */}
 
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 sm:p-6 lg:p-8">
-          <h3 className="font-heading text-2xl font-bold text-red-700 sm:text-3xl">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 sm:p-6">
+          <h3 className="font-heading text-xl font-bold text-red-700 sm:text-2xl">
             Danger Zone
           </h3>
 
-          <p className="mt-3 text-sm leading-7 text-red-600 sm:text-base lg:text-lg">
+          <p className="mt-3 text-sm leading-6 text-red-600 sm:text-base">
             Permanently delete your REMINDR account. This removes your
             reminders, processed emails, disconnects Gmail notifications and
             cannot be undone.
@@ -184,7 +184,7 @@ export default function Profile() {
 
           <button
             onClick={handleDeleteAccount}
-            className="mt-6 w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white transition hover:bg-red-700 sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
+            className="mt-5 w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white transition hover:bg-red-700 sm:w-auto sm:px-7 sm:py-3"
           >
             Delete Account
           </button>

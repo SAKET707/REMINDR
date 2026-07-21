@@ -23,11 +23,11 @@ export default function Dashboard() {
       {/* Hero */}
 
       <section>
-        <h1 className="font-heading text-4xl font-bold leading-tight text-primary-dark sm:text-5xl lg:text-6xl xl:text-7xl">
+        <h1 className="font-heading text-4xl font-bold text-primary-dark sm:text-5xl lg:text-6xl">
           Dashboard
         </h1>
 
-        <p className="mt-3 text-base leading-7 text-text-secondary sm:text-lg md:text-xl lg:text-2xl">
+        <p className="mt-3 text-base text-text-secondary sm:text-lg lg:text-xl">
           Welcome back,{" "}
           <span className="font-semibold text-primary-dark">{user?.name}</span>.
         </p>
@@ -36,7 +36,7 @@ export default function Dashboard() {
       {/* Telegram Banner */}
 
       {!user?.telegram_chat_id && (
-        <section className="mt-8 sm:mt-10">
+        <section className="mt-7 sm:mt-8">
           <TelegramBanner />
         </section>
       )}
@@ -45,15 +45,15 @@ export default function Dashboard() {
 
       <section className="mt-10 sm:mt-12">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-heading text-2xl font-semibold text-primary-dark sm:text-3xl lg:text-4xl">
+          <h2 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl lg:text-3xl">
             Upcoming Reminders
           </h2>
         </div>
 
-        <div className="space-y-5">
+        <div className="mt-5 max-w-5xl space-y-4">
           {reminders.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
-              <p className="text-base text-text-secondary sm:text-lg">
+            <div className="rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+              <p className="text-sm text-text-secondary sm:text-base">
                 No upcoming reminders.
               </p>
             </div>

@@ -17,3 +17,7 @@ class ReminderResponse(BaseModel):
         # Instead of returning only email_id, the API returns
         # selected email details in the same response.
             #  no extra api request needed
+
+
+class ReminderUpdateRequest(BaseModel):
+    scheduled_for: datetime

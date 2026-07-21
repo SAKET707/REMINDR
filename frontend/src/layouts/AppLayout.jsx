@@ -8,8 +8,10 @@ export default function AppLayout({ children }) {
     <main className="flex min-h-screen bg-background-soft">
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-      <section className="min-w-0 flex-1 p-4 sm:p-6 md:p-8 lg:p-10">
-        {children}
+      <section className="min-w-0 flex-1">
+        <div className="mx-auto w-full max-w-7xl p-5 sm:p-7 lg:p-10">
+          {children}
+        </div>
       </section>
     </main>
   );

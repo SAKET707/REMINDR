@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-
+from fastapi import HTTPException, status
 from agents.scheduling_agent import SchedulingAgent
 from models.email import Email
 from models.reminder import Reminder
@@ -85,4 +85,101 @@ class ReminderService:
                 Reminder.scheduled_for <= now,
             )
             .all()
+        )
+    
+    @staticmethod
+    def update(
+        db,
+        reminder_id,
+        user_id,
+        scheduled_for,
+    ):
+        reminder = (
+            db.query(Reminder)
+            .join(Email)
+            .filter(
+                Reminder.id == reminder_id,
+                Email.user_id == user_id,
+            )
+            .first()
+        )
+
+        if reminder is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Reminder not found.",
+            )
+
+        if reminder.status != "PENDING":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only pending reminders can be updated.",
+            )
+
+        now = datetime.now(timezone.utc)
+
+        if scheduled_for <= now:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Reminder time must be in the future.",
+            )
+
+        if (
+            reminder.email.deadline is not None
+            and scheduled_for >= reminder.email.deadline
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Reminder must be before the deadline.",
+            )
+
+        reminder.scheduled_for = scheduled_for
+
+        db.commit()
+        db.refresh(reminder)
+
+        logger.info(
+            "Updated reminder id=%d scheduled_for=%s",
+            reminder.id,
+            reminder.scheduled_for.isoformat(),
+        )
+
+        return reminder
+    
+    @staticmethod
+    def delete(
+        db,
+        reminder_id,
+        user_id,
+    ):
+        reminder = (
+            db.query(Reminder)
+            .join(Email)
+            .filter(
+                Reminder.id == reminder_id,
+                Email.user_id == user_id,
+            )
+            .first()
+        )
+
+        if reminder is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Reminder not found.",
+            )
+
+        if reminder.status != "PENDING":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only pending reminders can be deleted.",
+            )
+
+        db.delete(reminder.email)
+
+        db.commit()
+
+        logger.info(
+            "Deleted reminder id=%d for user id=%d",
+            reminder_id,
+            user_id,
         )

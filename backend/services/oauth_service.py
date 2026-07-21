@@ -81,7 +81,9 @@ async def google_callback(
         "User %s logged in successfully",
         user.email,
     )
-    
+
+    frontend_url = settings.FRONTEND_URL.rstrip("/")
+
     return RedirectResponse(
         url=f"{frontend_url}/oauth/callback?token={access_token}"
     )

@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import OAuthCallback from "./pages/OAuthCallback";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import ManageReminders from "./pages/ManageReminders";
 
 function App() {
   return (
@@ -27,6 +28,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/manage-reminders"
+          element={
+            <ProtectedRoute>
+              <ManageReminders />
             </ProtectedRoute>
           }
         />
