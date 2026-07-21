@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useSidebar } from "../context/useSidebar";
 import Sidebar from "../components/dashboard/Sidebar";
 
 export default function AppLayout({ children }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, setCollapsed } = useSidebar();
 
   return (
     <main className="flex min-h-screen bg-background-soft">
