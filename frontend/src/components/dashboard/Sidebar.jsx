@@ -1,4 +1,11 @@
-import { FiHome, FiUser, FiLogOut, FiMenu, FiBell } from "react-icons/fi";
+import {
+  FiHome,
+  FiUser,
+  FiLogOut,
+  FiMenu,
+  FiBell,
+  FiSettings,
+} from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useReminder } from "../../context/useReminder";
@@ -84,6 +91,20 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         >
           <FiUser size={22} />
           {!collapsed && <span>Profile</span>}
+        </button>
+
+        <button
+          onClick={() => navigate("/settings")}
+          className={`flex items-center rounded-2xl px-3 py-3 text-base font-medium transition sm:mt-2 sm:px-4 sm:py-4 sm:text-lg ${
+            collapsed ? "justify-center" : "gap-4"
+          } ${
+            location.pathname === "/settings"
+              ? "bg-primary-light text-white"
+              : "hover:bg-white/10"
+          }`}
+        >
+          <FiSettings size={22} />
+          {!collapsed && <span>Settings</span>}
         </button>
       </nav>
 
