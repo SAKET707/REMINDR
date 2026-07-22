@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import OAuthCallback from "./pages/OAuthCallback";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import ManageReminders from "./pages/ManageReminders";
+import Preparation from "./pages/Preparation";
 
 function App() {
   return (
@@ -46,6 +47,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ManageReminders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/preparation"
+          element={
+            <ProtectedRoute>
+              <Preparation />
             </ProtectedRoute>
           }
         />

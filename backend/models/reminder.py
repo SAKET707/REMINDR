@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime, timezone
+from models.preparation_task import PreparationTask
 from typing import TYPE_CHECKING
 from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -7,6 +8,7 @@ from core.database import Base
 
 if TYPE_CHECKING:
     from models.email import Email
+    from models.preparation_task import PreparationTask
 
 
 class Reminder(Base):
@@ -45,4 +47,9 @@ class Reminder(Base):
 
     email: Mapped["Email"] = relationship(
         back_populates="reminders"
+    )
+
+    preparation_tasks: Mapped[list["PreparationTask"]] = relationship(
+        back_populates="reminder",
+        cascade="all, delete-orphan",
     )

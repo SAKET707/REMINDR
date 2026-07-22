@@ -14,6 +14,7 @@ from core.config import settings
 from api import telegram_webhook
 import logging
 from core.logging_config import setup_logging
+from api.preparation_task import router as preparation_task_router
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ app.include_router(user.router)
 app.include_router(telegram.router)
 app.include_router(gmail.router)
 app.include_router(telegram_webhook.router)
+app.include_router(preparation_task_router)
 
 @app.get("/")
 def root():

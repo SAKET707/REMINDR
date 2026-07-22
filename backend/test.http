@@ -1,0 +1,47 @@
+@token=
+GET http://localhost:8000/preparation-tasks/reminder/48
+Authorization: Bearer {{token}}
+
+###
+POST http://localhost:8000/preparation-tasks/reminder/48
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "Review DSA"
+}
+
+###
+PATCH http://localhost:8000/preparation-tasks/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "Practice DSA"
+}
+
+
+###
+PATCH http://localhost:8000/preparation-tasks/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "completed": true
+}
+
+
+###
+PATCH http://localhost:8000/preparation-tasks/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "Revise Arrays",
+    "completed": false
+}
+
+
+###
+DELETE http://localhost:8000/preparation-tasks/1
+Authorization: Bearer {{token}}

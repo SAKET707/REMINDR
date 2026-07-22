@@ -5,6 +5,7 @@ import {
   FiMenu,
   FiBell,
   FiSettings,
+  FiClipboard,
 } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
@@ -77,6 +78,20 @@ export default function Sidebar({ collapsed, setCollapsed }) {
         >
           <FiBell size={22} />
           {!collapsed && <span>Manage Reminders</span>}
+        </button>
+
+        <button
+          onClick={() => navigate("/preparation")}
+          className={`flex items-center rounded-2xl px-3 py-3 text-base font-medium transition sm:mt-2 sm:px-4 sm:py-4 sm:text-lg ${
+            collapsed ? "justify-center" : "gap-4"
+          } ${
+            location.pathname === "/preparation"
+              ? "bg-primary-light text-white"
+              : "hover:bg-white/10"
+          }`}
+        >
+          <FiClipboard size={22} />
+          {!collapsed && <span>Preparation</span>}
         </button>
 
         <button

@@ -1,3 +1,4 @@
+import { Pencil, Trash2 } from "lucide-react";
 export default function ReminderCard({
   reminder,
   editable = false,
@@ -22,16 +23,18 @@ export default function ReminderCard({
         <div className="mt-5 flex flex-wrap gap-3">
           <button
             onClick={() => onEdit(reminder)}
-            className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            className="flex items-center gap-1 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-background-soft"
           >
-            Edit
+            <Pencil size={16} />
+            <span>Edit</span>
           </button>
 
           <button
             onClick={() => onDelete(reminder)}
-            className="rounded-xl border border-red-500 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+            className="flex items-center gap-1 rounded-xl border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
           >
-            Delete
+            <Trash2 size={16} />
+            <span>Delete</span>
           </button>
         </div>
       )}
