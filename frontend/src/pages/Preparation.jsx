@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
 import AppLayout from "../layouts/AppLayout";
 import { useReminder } from "../context/useReminder";
+import AIPreparationModal from "../components/preparation/AIPreparationModal";
+import { LoaderCircle } from "lucide-react";
+
 import {
   getPreparationTasks,
   createPreparationTask,
   updatePreparationTask,
   deletePreparationTask,
+  generatePreparationSuggestions,
 } from "../services/preparation";
 import { Trash2 } from "lucide-react";
 
@@ -22,6 +26,12 @@ export default function Preparation() {
 
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
+
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [selectedReminderId, setSelectedReminderId] = useState(null);
+
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+  const [generatingAI, setGeneratingAI] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -155,6 +165,36 @@ export default function Preparation() {
     }
   }
 
+  async function handleGenerateAI(reminderId) {
+    try {
+      setSelectedReminderId(reminderId); // Move here
+      setGeneratingAI(true);
+
+      const suggestions = await generatePreparationSuggestions(reminderId);
+
+      setAiSuggestions(suggestions);
+      setShowAiModal(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setGeneratingAI(false);
+    }
+  }
+
+  async function handleAddAiTask(title) {
+    try {
+      const task = await createPreparationTask(selectedReminderId, title);
+
+      setTasksByReminder((prev) => ({
+        ...prev,
+        [selectedReminderId]: [...(prev[selectedReminderId] ?? []), task],
+      }));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background-soft">
@@ -191,52 +231,62 @@ export default function Preparation() {
               {tasksByReminder[reminder.id]?.length ? (
                 <ul className="space-y-3">
                   {tasksByReminder[reminder.id].map((task) => (
-                    <li key={task.id} className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() =>
-                          handleToggleTask(task.id, task.completed, reminder.id)
-                        }
-                        className="h-4 w-4 cursor-pointer accent-primary"
-                      />
-
-                      {editingTaskId === task.id ? (
+                    <li
+                      key={task.id}
+                      className="flex flex-col gap-3 sm:flex-row sm:items-center"
+                    >
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         <input
-                          autoFocus
-                          value={editingTitle}
-                          onChange={(e) => setEditingTitle(e.target.value)}
-                          onBlur={() => handleEditTask(task)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleEditTask(task);
-                            }
-
-                            if (e.key === "Escape") {
-                              setEditingTaskId(null);
-                              setEditingTitle("");
-                            }
-                          }}
-                          className="flex-1 rounded-md border border-border px-2 py-1 outline-none focus:border-primary"
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() =>
+                            handleToggleTask(
+                              task.id,
+                              task.completed,
+                              reminder.id,
+                            )
+                          }
+                          className="h-4 w-4 cursor-pointer accent-primary"
                         />
-                      ) : (
-                        <span
-                          className={`flex-1 transition-all duration-200 decoration-1 ${
-                            task.completed
-                              ? "line-through text-text-secondary opacity-60"
-                              : "text-primary-dark"
-                          }`}
-                        >
-                          {task.title}
-                        </span>
-                      )}
-                      <div className="ml-auto flex items-center gap-2">
+
+                        {editingTaskId === task.id ? (
+                          <input
+                            autoFocus
+                            value={editingTitle}
+                            onChange={(e) => setEditingTitle(e.target.value)}
+                            onBlur={() => handleEditTask(task)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleEditTask(task);
+                              }
+
+                              if (e.key === "Escape") {
+                                setEditingTaskId(null);
+                                setEditingTitle("");
+                              }
+                            }}
+                            className="min-w-0 flex-1 rounded-md border border-border px-2 py-1 outline-none focus:border-primary"
+                          />
+                        ) : (
+                          <span
+                            className={`min-w-0 flex-1 break-words transition-all duration-200 decoration-1 ${
+                              task.completed
+                                ? "line-through text-text-secondary opacity-60"
+                                : "text-primary-dark"
+                            }`}
+                          >
+                            {task.title}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2 sm:ml-auto">
                         <button
                           onClick={() => {
                             setEditingTaskId(task.id);
                             setEditingTitle(task.title);
                           }}
-                          className="flex items-center gap-1 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-background-soft"
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-background-soft"
                         >
                           <Pencil size={16} />
                           <span>Edit</span>
@@ -244,7 +294,7 @@ export default function Preparation() {
 
                         <button
                           onClick={() => handleDeleteTask(task)}
-                          className="flex items-center gap-1 rounded-xl border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1 rounded-xl border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
                         >
                           <Trash2 size={16} />
                           <span>Delete</span>
@@ -289,18 +339,49 @@ export default function Preparation() {
                     </div>
                   </div>
                 ) : (
-                  <button
-                    onClick={() => setAddingReminderId(reminder.id)}
-                    className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-                  >
-                    + Add Task
-                  </button>
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={() => setAddingReminderId(reminder.id)}
+                      className="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+                    >
+                      + Add Task
+                    </button>
+
+                    <button
+                      onClick={() => handleGenerateAI(reminder.id)}
+                      disabled={generatingAI}
+                      className="rounded-xl border border-primary px-4 py-2 text-sm font-medium text-primary transition hover:bg-background-soft disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {generatingAI && selectedReminderId === reminder.id ? (
+                        <span className="flex items-center gap-2">
+                          <LoaderCircle size={16} className="animate-spin" />
+                          Generating...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          <span>Generate with AI</span>
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         ))}
       </section>
+
+      <AIPreparationModal
+        open={showAiModal}
+        reminderId={selectedReminderId}
+        suggestions={aiSuggestions}
+        onClose={() => {
+          setShowAiModal(false);
+          setAiSuggestions([]);
+          setSelectedReminderId(null);
+        }}
+        onAdd={handleAddAiTask}
+      />
     </AppLayout>
   );
 }

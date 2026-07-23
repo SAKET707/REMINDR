@@ -1,9 +1,10 @@
 @token=
-GET http://localhost:8000/preparation-tasks/reminder/48
+
+GET http://localhost:8000/preparation-tasks/reminder/
 Authorization: Bearer {{token}}
 
 ###
-POST http://localhost:8000/preparation-tasks/reminder/48
+POST http://localhost:8000/preparation-tasks/reminder/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -12,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:8000/preparation-tasks/1
+PATCH http://localhost:8000/preparation-tasks/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -22,7 +23,7 @@ Content-Type: application/json
 
 
 ###
-PATCH http://localhost:8000/preparation-tasks/1
+PATCH http://localhost:8000/preparation-tasks/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -32,7 +33,7 @@ Content-Type: application/json
 
 
 ###
-PATCH http://localhost:8000/preparation-tasks/1
+PATCH http://localhost:8000/preparation-tasks/
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -43,5 +44,15 @@ Content-Type: application/json
 
 
 ###
-DELETE http://localhost:8000/preparation-tasks/1
+DELETE http://localhost:8000/preparation-tasks/
+Authorization: Bearer {{token}}
+
+###
+
+POST http://localhost:8000/preparation-ai/test
+Authorization: Bearer {{token}}
+
+###
+###
+POST http://localhost:8000/preparation-ai/reminder//generate
 Authorization: Bearer {{token}}

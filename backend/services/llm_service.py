@@ -1,5 +1,5 @@
 from groq import Groq
-
+from langchain_google_genai import ChatGoogleGenerativeAI
 from core.config import settings
 # this service is here to talk to our model here groq it is.
 # we need to make changes here in order to change the model like openai etc 
@@ -70,4 +70,21 @@ class LLMService:
             messages=messages,
             temperature=temperature,
             tools=tools,
+        )
+
+
+    @staticmethod
+    def get_gemini_llm(
+        model: str,
+        temperature: float = 0,
+    ) -> ChatGoogleGenerativeAI:
+        """
+        Returns a LangChain Gemini chat model.
+        Used by LangGraph agents.
+        """
+
+        return ChatGoogleGenerativeAI(
+            model=model,
+            google_api_key=settings.GEMINI_API_KEY,
+            temperature=temperature,
         )

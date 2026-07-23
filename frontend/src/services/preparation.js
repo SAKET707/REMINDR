@@ -22,3 +22,11 @@ export async function updatePreparationTask(taskId, updates) {
 export async function deletePreparationTask(taskId) {
   await api.delete(`/preparation-tasks/${taskId}`);
 }
+
+export async function generatePreparationSuggestions(reminderId) {
+  const { data } = await api.post(
+    `/preparation-ai/reminder/${reminderId}/generate`,
+  );
+
+  return data.suggestions;
+}

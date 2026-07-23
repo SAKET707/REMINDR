@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timezone
-from agents.tools import TOOLS, AVAILABLE_TOOLS
+from tools.scheduling_tools import TOOLS, AVAILABLE_TOOLS
 from prompts.scheduling import SCHEDULING_SYSTEM_PROMPT
 from services.llm_service import LLMService
 
