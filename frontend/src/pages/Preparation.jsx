@@ -4,6 +4,7 @@ import AppLayout from "../layouts/AppLayout";
 import { useReminder } from "../context/useReminder";
 import AIPreparationModal from "../components/preparation/AIPreparationModal";
 import { LoaderCircle } from "lucide-react";
+import ConfirmationModal from "../components/common/ConfirmationModal";
 
 import {
   getPreparationTasks,
@@ -32,6 +33,10 @@ export default function Preparation() {
 
   const [aiSuggestions, setAiSuggestions] = useState([]);
   const [generatingAI, setGeneratingAI] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [deletingTask, setDeletingTask] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -144,24 +149,27 @@ export default function Preparation() {
     setEditingTitle("");
   }
 
-  async function handleDeleteTask(task) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this task?",
-    );
-
-    if (!confirmed) return;
+  async function handleDeleteTask() {
+    if (!taskToDelete) return;
 
     try {
-      await deletePreparationTask(task.id);
+      setDeletingTask(true);
+
+      await deletePreparationTask(taskToDelete.id);
 
       setTasksByReminder((prev) => ({
         ...prev,
-        [task.reminder_id]: prev[task.reminder_id].filter(
-          (t) => t.id !== task.id,
+        [taskToDelete.reminder_id]: prev[taskToDelete.reminder_id].filter(
+          (t) => t.id !== taskToDelete.id,
         ),
       }));
+
+      setShowDeleteModal(false);
+      setTaskToDelete(null);
     } catch (error) {
       console.error(error);
+    } finally {
+      setDeletingTask(false);
     }
   }
 
@@ -293,7 +301,10 @@ export default function Preparation() {
                         </button>
 
                         <button
-                          onClick={() => handleDeleteTask(task)}
+                          onClick={() => {
+                            setTaskToDelete(task);
+                            setShowDeleteModal(true);
+                          }}
                           className="flex-1 sm:flex-none flex items-center justify-center gap-1 rounded-xl border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
                         >
                           <Trash2 size={16} />
@@ -381,6 +392,23 @@ export default function Preparation() {
           setSelectedReminderId(null);
         }}
         onAdd={handleAddAiTask}
+      />
+
+      <ConfirmationModal
+        open={showDeleteModal}
+        title="Delete Preparation Task"
+        message="Are you sure you want to delete this preparation task?"
+        description="This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deletingTask}
+        onCancel={() => {
+          if (!deletingTask) {
+            setShowDeleteModal(false);
+            setTaskToDelete(null);
+          }
+        }}
+        onConfirm={handleDeleteTask}
       />
     </AppLayout>
   );

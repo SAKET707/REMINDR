@@ -3,18 +3,18 @@ import AppLayout from "../layouts/AppLayout";
 import { useAuth } from "../context/useAuth";
 import { deleteAccount } from "../services/user";
 import { notify } from "../utils/toast";
+import ConfirmationModal from "../components/common/ConfirmationModal";
+import { useState } from "react";
 
 export default function Settings() {
   const { logout } = useAuth();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "This will permanently delete your REMINDR account.\n\nThis action cannot be undone.",
-    );
-
-    if (!confirmed) return;
-
     try {
+      setDeleting(true);
+
       await deleteAccount();
 
       notify.success("Account deleted successfully.");
@@ -22,6 +22,9 @@ export default function Settings() {
       logout();
     } catch (error) {
       notify.error("Unable to delete account.");
+    } finally {
+      setDeleting(false);
+      setShowDeleteModal(false);
     }
   };
 
@@ -52,13 +55,26 @@ export default function Settings() {
           </p>
 
           <button
-            onClick={handleDeleteAccount}
+            onClick={() => setShowDeleteModal(true)}
             className="mt-5 w-full rounded-xl bg-red-600 px-6 py-3 text-base font-semibold text-white transition hover:bg-red-700 sm:w-auto sm:px-7 sm:py-3"
           >
             Delete Account
           </button>
         </div>
       </div>
+      <ConfirmationModal
+        open={showDeleteModal}
+        title="Delete Account"
+        message="This will permanently delete your REMINDR account."
+        description="All reminders, preparation tasks, processed emails and account data will be permanently deleted. This action cannot be undone."
+        confirmText="Delete Account"
+        cancelText="Cancel"
+        loading={deleting}
+        onCancel={() => {
+          if (!deleting) setShowDeleteModal(false);
+        }}
+        onConfirm={handleDeleteAccount}
+      />
     </AppLayout>
   );
 }

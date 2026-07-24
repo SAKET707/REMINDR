@@ -5,11 +5,15 @@ import { deleteReminder } from "../services/reminder";
 import { notify } from "../utils/toast";
 import { useState } from "react";
 import { updateReminder } from "../services/reminder";
+import ConfirmationModal from "../components/common/ConfirmationModal";
 
 export default function ManageReminders() {
   const { reminders, loading, removeReminder, replaceReminder } = useReminder();
   const [editingReminder, setEditingReminder] = useState(null);
   const [scheduledFor, setScheduledFor] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [reminderToDelete, setReminderToDelete] = useState(null);
+  const [deletingReminder, setDeletingReminder] = useState(false);
 
   const [minDateTime] = useState(() => {
     return new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -46,20 +50,25 @@ export default function ManageReminders() {
     }
   }
 
-  async function handleDelete(reminder) {
-    const ok = window.confirm("Are you sure you want to delete this reminder?");
-
-    if (!ok) return;
+  async function handleDelete() {
+    if (!reminderToDelete) return;
 
     try {
-      await deleteReminder(reminder.id);
+      setDeletingReminder(true);
 
-      removeReminder(reminder.id);
+      await deleteReminder(reminderToDelete.id);
+
+      removeReminder(reminderToDelete.id);
 
       notify.success("Reminder deleted successfully.");
+
+      setShowDeleteModal(false);
+      setReminderToDelete(null);
     } catch (error) {
       console.error(error);
       notify.error("Failed to delete reminder.");
+    } finally {
+      setDeletingReminder(false);
     }
   }
 
@@ -97,7 +106,10 @@ export default function ManageReminders() {
               reminder={reminder}
               editable
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={(reminder) => {
+                setReminderToDelete(reminder);
+                setShowDeleteModal(true);
+              }}
             />
           ))
         )}
@@ -143,6 +155,23 @@ export default function ManageReminders() {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        open={showDeleteModal}
+        title="Delete Reminder"
+        message="Are you sure you want to delete this reminder?"
+        description="This reminder will be permanently removed. This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deletingReminder}
+        onCancel={() => {
+          if (!deletingReminder) {
+            setShowDeleteModal(false);
+            setReminderToDelete(null);
+          }
+        }}
+        onConfirm={handleDelete}
+      />
     </AppLayout>
   );
 }
