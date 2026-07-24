@@ -52,15 +52,15 @@ export default function AIPreparationModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        className="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl sm:p-6"
       >
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="font-heading text-2xl font-bold text-primary-dark">
+            <h2 className="font-heading text-xl font-bold text-primary-dark sm:text-2xl">
               AI Preparation Suggestions
             </h2>
 
-            <p className="mt-2 text-sm text-text-secondary">
+            <p className="mt-2 text-sm text-text-secondary sm:text-base">
               Review, edit and add only the tasks you need.
             </p>
           </div>
@@ -73,13 +73,11 @@ export default function AIPreparationModal({
           </button>
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-6 space-y-5">
           {items.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 rounded-xl border border-border p-3"
-            >
-              <input
+            <div key={index} className="rounded-xl border border-border p-4">
+              <textarea
+                rows={2}
                 value={item.text}
                 disabled={item.added}
                 onChange={(e) => {
@@ -96,38 +94,38 @@ export default function AIPreparationModal({
                     ),
                   );
                 }}
-                className={`flex-1 bg-transparent outline-none ${
+                className={`w-full resize-none bg-transparent text-sm sm:text-base leading-6 outline-none ${
                   item.added
                     ? "line-through text-text-secondary opacity-50"
                     : "text-primary-dark"
                 }`}
               />
 
-              <button
-                disabled={item.added || addingIndex === index}
-                onClick={() => handleAdd(index)}
-                className={`flex min-w-[95px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition ${
-                  item.added
-                    ? "cursor-default bg-green-600 text-white"
-                    : "bg-primary text-white hover:opacity-90"
-                }`}
-              >
-                {addingIndex === index ? (
-                  <>
+              <div className="mt-4 flex justify-end">
+                <button
+                  disabled={item.added || addingIndex === index}
+                  onClick={() => handleAdd(index)}
+                  className={`flex min-w-[110px] items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition ${
+                    item.added
+                      ? "cursor-default bg-green-600 text-white"
+                      : "bg-primary text-white hover:opacity-90"
+                  }`}
+                >
+                  {addingIndex === index ? (
                     <LoaderCircle className="animate-spin" size={16} />
-                  </>
-                ) : item.added ? (
-                  <>
-                    <Check size={16} />
-                    Added
-                  </>
-                ) : (
-                  <>
-                    <Plus size={16} />
-                    Add
-                  </>
-                )}
-              </button>
+                  ) : item.added ? (
+                    <>
+                      <Check size={16} />
+                      Added
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={16} />
+                      Add
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           ))}
         </div>

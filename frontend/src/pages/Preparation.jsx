@@ -208,11 +208,11 @@ export default function Preparation() {
   return (
     <AppLayout>
       <section>
-        <h1 className="font-heading text-5xl font-bold text-primary-dark">
+        <h1 className="font-heading text-4xl font-bold text-primary-dark sm:text-5xl lg:text-6xl">
           Preparation
         </h1>
 
-        <p className="mt-2 text-text-secondary">
+        <p className="mt-3 text-base text-text-secondary sm:text-lg lg:text-xl">
           Organize everything you need before your reminders.
         </p>
       </section>
@@ -223,7 +223,7 @@ export default function Preparation() {
             key={reminder.id}
             className="rounded-2xl border border-border bg-card p-6 shadow-sm"
           >
-            <h2 className="font-heading text-2xl font-semibold text-primary-dark">
+            <h2 className="font-heading text-xl font-semibold text-primary-dark sm:text-2xl">
               {reminder.email.summary}
             </h2>
 
@@ -265,11 +265,11 @@ export default function Preparation() {
                                 setEditingTitle("");
                               }
                             }}
-                            className="min-w-0 flex-1 rounded-md border border-border px-2 py-1 outline-none focus:border-primary"
+                            className="min-w-0 flex-1 rounded-md border border-border px-2 py-1 text-sm sm:text-base outline-none focus:border-primary"
                           />
                         ) : (
                           <span
-                            className={`min-w-0 flex-1 break-words transition-all duration-200 decoration-1 ${
+                            className={`min-w-0 flex-1 break-words text-sm sm:text-base transition-all duration-200 decoration-1 ${
                               task.completed
                                 ? "line-through text-text-secondary opacity-60"
                                 : "text-primary-dark"
